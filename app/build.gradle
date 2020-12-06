@@ -14,12 +14,28 @@ android {
         versionName "1.0"
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            storeFile file("fanwe.keystore")
+            storePassword "fanwe99cnlin"
+            keyAlias "fanwe"
+            keyPassword "fanwe99cnlin"
         }
     }
+
+    buildTypes {
+        debug {
+            zipAlignEnabled false
+            signingConfig signingConfigs.release
+        }
+        release {
+            zipAlignEnabled true
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

@@ -80,4 +80,19 @@
         android:text="开始"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/holo_red_dark"
+        android:gravity="center"
+        android:paddingStart="15dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="10dp"
+        android:text="关闭"
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
 </LinearLayout>

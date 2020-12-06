@@ -8,7 +8,6 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 
-import com.zhy.view.BaseFloatingView;
 import com.zhy.view.androidsimulateclickdemon.R;
 
 import java.text.DateFormat;
@@ -74,12 +73,12 @@ public class SettingFloatingView extends BaseFloatingView
                         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
                         String time = year + "-" + month + "-" + day + " " + mHour + ":" + mMinute;
-                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         Date date;
                         try
                         {
                             date = formatter.parse(time);
-                            mCallBack.save(date.getTime());
+                            mCallBack.save(date.getTime() - 100);
                         } catch (ParseException e)
                         {
                             e.printStackTrace();

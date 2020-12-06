@@ -88,8 +88,9 @@ public class TimeFloatingView extends BaseFloatingView
                 if (mCallBack != null && mAutoTime > 0)
                 {
                     long sys_time = System.currentTimeMillis();
-                    if (mAutoTime >= sys_time)
+                    if (sys_time >= mAutoTime)
                     {
+                        mAutoTime = 0;
                         mCallBack.getToTime();
                     }
                 }

@@ -96,16 +96,21 @@ public class ToolFloatingView extends BaseFloatingView
             if (mCallBack != null)
             {
                 boolean open = !tv_start.isSelected();
-                tv_start.setSelected(open);
-                if (open)
-                {
-                    tv_start.setText("停止");
-                } else
-                {
-                    tv_start.setText("开始");
-                }
+                start(open);
                 mCallBack.start(open);
             }
+        }
+    }
+
+    public void start(boolean open)
+    {
+        tv_start.setSelected(open);
+        if (open)
+        {
+            tv_start.setText("停止");
+        } else
+        {
+            tv_start.setText("开始");
         }
     }
 

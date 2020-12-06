@@ -203,12 +203,86 @@ public class FloatingViewService extends AccessibilityService
                 @Override
                 public void getToTime()
                 {
-                    clickStart();
-                    getTimer().start();
+                    startTask();
                 }
             });
         }
         return mFloatView;
+    }
+
+    private ToolFloatingView toolView;
+
+    private ToolFloatingView getToolView()
+    {
+        if (toolView == null)
+        {
+            toolView = new ToolFloatingView(this);
+            toolView.setCallBack(new ToolFloatingView.CallBack()
+            {
+                @Override
+                public void timer(boolean open)
+                {
+                    if (open)
+                    {
+                        getTimeFloatingView().addFloatViewToCenterTop();
+                    } else
+                    {
+                        getTimeFloatingView().removeFloatView();
+                    }
+                }
+
+                @Override
+                public void add()
+                {
+                    ClickFloatingView view = new ClickFloatingView(FloatingViewService.this);
+                    view.addFloatViewToCenter();
+                    mViews.add(view);
+                }
+
+                @Override
+                public void del()
+                {
+                    ClickFloatingView view = mViews.get(mViews.size() - 1);
+                    view.removeFloatView();
+                    mViews.remove(view);
+                }
+
+                @Override
+                public void config()
+                {
+                    SettingFloatingView dialog = new SettingFloatingView(FloatingViewService.this);
+                    dialog.setCallBack(new SettingFloatingView.CallBack()
+                    {
+                        @Override
+                        public void save(long time)
+                        {
+                            for (ClickFloatingView view : mViews)
+                            {
+                                view.setAutoTime(time);
+                            }
+                            getTimeFloatingView().setAutoTime(time);
+                        }
+                    });
+                    dialog.addFloatViewToCenter();
+                }
+
+
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void start(boolean open)
+                {
+                    if (open)
+                    {
+                        startTask();
+                    } else
+                    {
+                        stopTask();
+                    }
+                }
+            });
+        }
+
+        return toolView;
     }
 
     @Override
@@ -216,73 +290,20 @@ public class FloatingViewService extends AccessibilityService
     {
         super.onCreate();
         mService = this;
-        ToolFloatingView toolView = new ToolFloatingView(this);
-        toolView.setCallBack(new ToolFloatingView.CallBack()
-        {
-            @Override
-            public void timer(boolean open)
-            {
-                if (open)
-                {
-                    getTimeFloatingView().addFloatViewToCenterTop();
-                } else
-                {
-                    getTimeFloatingView().removeFloatView();
-                }
-            }
+        getToolView().addFloatView();
+    }
 
-            @Override
-            public void add()
-            {
-                ClickFloatingView view = new ClickFloatingView(FloatingViewService.this);
-                view.addFloatViewToCenter();
-                mViews.add(view);
-            }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void startTask()
+    {
+        clickStart();
+        getTimer().start();
+    }
 
-            @Override
-            public void del()
-            {
-                ClickFloatingView view = mViews.get(mViews.size() - 1);
-                view.removeFloatView();
-                mViews.remove(view);
-            }
-
-            @Override
-            public void config()
-            {
-                SettingFloatingView dialog = new SettingFloatingView(FloatingViewService.this);
-                dialog.setCallBack(new SettingFloatingView.CallBack()
-                {
-                    @Override
-                    public void save(long time)
-                    {
-                        for (ClickFloatingView view : mViews)
-                        {
-                            view.setAutoTime(time);
-                        }
-                        getTimeFloatingView().setAutoTime(time);
-                    }
-                });
-                dialog.addFloatViewToCenter();
-            }
-
-
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void start(boolean open)
-            {
-                if (open)
-                {
-                    clickStart();
-                    getTimer().start();
-                } else
-                {
-                    getTimer().cancel();
-                    clickStop();
-                }
-            }
-        });
-        toolView.addFloatView();
+    public void stopTask()
+    {
+        getTimer().cancel();
+        clickStop();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -356,7 +377,8 @@ public class FloatingViewService extends AccessibilityService
                 @Override
                 public void onFinish()
                 {
-
+                    getToolView().start(false);
+                    clickStop();
                 }
             };
         }

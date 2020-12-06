@@ -34,12 +34,11 @@ public class MainActivity extends Activity implements View.OnClickListener
             if (!FloatingViewService.isStart())
             {
                 startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                FloatingViewService.start(this);
             } else
             {
                 FloatingViewService.start(this);
-                finish();
             }
-
         }
     }
 }
