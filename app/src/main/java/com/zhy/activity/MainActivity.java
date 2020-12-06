@@ -11,12 +11,14 @@ import android.widget.TextView;
 import com.zhy.service.FloatingViewService;
 import com.zhy.view.androidsimulateclickdemon.R;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener
+{
 
     private TextView btn_start_service;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.act_main);
@@ -25,16 +27,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        if (v == btn_start_service) {
-            if (!FloatingViewService.isStart()) {
-                try {
-                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                } catch (Exception e) {
-                    startActivity(new Intent(Settings.ACTION_SETTINGS));
-                    e.printStackTrace();
-                }
-            } else {
+    public void onClick(View v)
+    {
+        if (v == btn_start_service)
+        {
+            if (!FloatingViewService.isStart())
+            {
+                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+            } else
+            {
+                FloatingViewService.start(this);
                 finish();
             }
 

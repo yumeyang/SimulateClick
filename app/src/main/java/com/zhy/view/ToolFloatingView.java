@@ -15,7 +15,8 @@ import com.zhy.view.androidsimulateclickdemon.R;
  * @email:309581534@qq.com
  * @describe:
  */
-public class ToolFloatingView extends BaseFloatingView {
+public class ToolFloatingView extends BaseFloatingView
+{
 
     private TextView tv_timer;
     private TextView tv_add;
@@ -23,15 +24,18 @@ public class ToolFloatingView extends BaseFloatingView {
     private TextView tv_config;
     private TextView tv_start;
 
-    public ToolFloatingView(Context context) {
+    public ToolFloatingView(Context context)
+    {
         super(context);
     }
 
-    public ToolFloatingView(Context context, @Nullable AttributeSet attrs) {
+    public ToolFloatingView(Context context, @Nullable AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
-    protected void init() {
+    protected void init()
+    {
         super.init();
         View ll_parent = findViewById(R.id.ll_parent);
         ll_parent.setClickable(true);
@@ -52,39 +56,70 @@ public class ToolFloatingView extends BaseFloatingView {
     }
 
     @Override
-    public void onClick(View v) {
-        if (v == tv_timer) {
-            if (mCallBack != null) {
-                mCallBack.addTimer();
+    public void onClick(View v)
+    {
+        if (v == tv_timer)
+        {
+            if (mCallBack != null)
+            {
+                boolean open = !tv_timer.isSelected();
+                tv_timer.setSelected(open);
+                if (open)
+                {
+                    tv_timer.setText("时间（关）");
+                } else
+                {
+                    tv_timer.setText("时间（开）");
+                }
+                mCallBack.timer(open);
             }
-        } else if (v == tv_add) {
-            if (mCallBack != null) {
+        } else if (v == tv_add)
+        {
+            if (mCallBack != null)
+            {
                 mCallBack.add();
             }
-        } else if (v == tv_del) {
-            if (mCallBack != null) {
+        } else if (v == tv_del)
+        {
+            if (mCallBack != null)
+            {
                 mCallBack.del();
             }
-        } else if (v == tv_config) {
-            if (mCallBack != null) {
+        } else if (v == tv_config)
+        {
+            if (mCallBack != null)
+            {
                 mCallBack.config();
             }
-        } else if (v == tv_start) {
-            if (mCallBack != null) {
-                mCallBack.start();
+        } else if (v == tv_start)
+        {
+            if (mCallBack != null)
+            {
+                boolean open = !tv_start.isSelected();
+                tv_start.setSelected(open);
+                if (open)
+                {
+                    tv_start.setText("停止");
+                } else
+                {
+                    tv_start.setText("开始");
+                }
+                mCallBack.start(open);
             }
         }
     }
 
     private CallBack mCallBack;
 
-    public void setCallBack(CallBack mCallBack) {
+    public void setCallBack(CallBack mCallBack)
+    {
         this.mCallBack = mCallBack;
     }
 
-    public interface CallBack {
+    public interface CallBack
+    {
 
-        void addTimer();
+        void timer(boolean open);
 
         void add();
 
@@ -92,12 +127,13 @@ public class ToolFloatingView extends BaseFloatingView {
 
         void config();
 
-        void start();
-        
+        void start(boolean open);
+
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.view_tool_floating;
+    protected int getLayoutId()
+    {
+        return R.layout.view_float_tool;
     }
 }

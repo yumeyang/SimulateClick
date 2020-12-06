@@ -17,7 +17,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="15dp"
         android:paddingBottom="10dp"
-        android:text="时间"
+        android:text="时间开"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 
