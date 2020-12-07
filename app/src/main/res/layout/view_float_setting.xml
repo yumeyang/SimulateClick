@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_red_dark"
@@ -42,11 +43,13 @@
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
-        <com.wx.wheelview.widget.WheelView
-            android:id="@+id/wheel_view"
+        <com.weigan.loopview.LoopView
+            android:id="@+id/loop_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp" />
+            android:layout_height="100dp"
+            android:layout_marginStart="10dp"
+            app:awv_itemsVisibleCount="4"
+            app:awv_textsize="14" />
     </LinearLayout>
 
     <LinearLayout

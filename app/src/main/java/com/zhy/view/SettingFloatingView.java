@@ -7,14 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
-import com.wx.wheelview.adapter.ArrayWheelAdapter;
-import com.wx.wheelview.widget.WheelView;
+import com.weigan.loopview.LoopView;
 import com.zhy.activity.MainActivity;
 import com.zhy.simulate.click.R;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,7 +26,7 @@ import java.util.Date;
 public class SettingFloatingView extends BaseFloatingView {
 
     private TimePicker tp;
-    private WheelView<String> wheel_view;
+    private LoopView loop_view;
     private TextView tv_dismiss;
     private TextView tv_save;
 
@@ -56,7 +52,7 @@ public class SettingFloatingView extends BaseFloatingView {
 
     private void initView() {
         tp = findViewById(R.id.tp);
-        wheel_view = findViewById(R.id.wheel_view);
+        loop_view = findViewById(R.id.loop_view);
         tv_dismiss = findViewById(R.id.tv_dismiss);
         tv_save = findViewById(R.id.tv_save);
         tp.setIs24HourView(true);
@@ -87,7 +83,7 @@ public class SettingFloatingView extends BaseFloatingView {
                 }
 
                 long long_sub_time = 0;
-                String sub_time = wheel_view.getSelectionItem();
+                String sub_time = MainActivity.mList.get(loop_view.getSelectedItem());
                 if (!TextUtils.isEmpty(sub_time)) {
                     long_sub_time = Integer.parseInt(sub_time);
                 }
@@ -124,10 +120,8 @@ public class SettingFloatingView extends BaseFloatingView {
     }
 
     private void initData() {
-        wheel_view.setWheelAdapter(new ArrayWheelAdapter(getContext()));
-        wheel_view.setSkin(WheelView.Skin.Common);
-        wheel_view.setWheelData(MainActivity.mList);
-        wheel_view.setSelection(100);
+        loop_view.setItems(MainActivity.mList);
+        loop_view.setInitPosition(100);
     }
 
     private CallBack mCallBack;
