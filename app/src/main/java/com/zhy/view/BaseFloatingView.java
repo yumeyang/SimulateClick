@@ -20,43 +20,36 @@ import androidx.annotation.Nullable;
  * @email:309581534@qq.com
  * @describe:
  */
-public abstract class BaseFloatingView extends LinearLayout implements View.OnClickListener
-{
+public abstract class BaseFloatingView extends LinearLayout implements View.OnClickListener {
 
     protected abstract int getLayoutId();
 
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mWindowParams;
 
-    public BaseFloatingView(Context context)
-    {
+    public BaseFloatingView(Context context) {
         super(context);
         init();
     }
 
-    public BaseFloatingView(Context context, @Nullable AttributeSet attrs)
-    {
+    public BaseFloatingView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    protected void init()
-    {
+    protected void init() {
         LayoutInflater.from(getContext()).inflate(getLayoutId(), this);
         initWindowParams();
     }
 
-    private void initWindowParams()
-    {
+    private void initWindowParams() {
         mWindowParams = new WindowManager.LayoutParams();
         mWindowParams.flags =
                 mWindowParams.flags | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mWindowParams.gravity = Gravity.TOP | Gravity.START;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mWindowParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else
-        {
+        } else {
             mWindowParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         }
         mWindowParams.x = 0;
@@ -67,10 +60,8 @@ public abstract class BaseFloatingView extends LinearLayout implements View.OnCl
         mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
     }
 
-    protected void setWindowTouch(View view)
-    {
-        view.setOnTouchListener(new View.OnTouchListener()
-        {
+    protected void setWindowTouch(View view) {
+        view.setOnTouchListener(new View.OnTouchListener() {
             //获取X坐标
             private int startX;
             //获取Y坐标
@@ -82,10 +73,8 @@ public abstract class BaseFloatingView extends LinearLayout implements View.OnCl
 
             @SuppressLint("ClickableViewAccessibility")
             @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                switch (event.getAction())
-                {
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         startX = mWindowParams.x;
                         startY = mWindowParams.y;
@@ -104,37 +93,31 @@ public abstract class BaseFloatingView extends LinearLayout implements View.OnCl
         });
     }
 
-    public void addFloatView()
-    {
+    public void addFloatView() {
         mWindowManager.addView(this, mWindowParams);
     }
 
-    public void addFloatViewToCenter()
-    {
+    public void addFloatViewToCenter() {
         mWindowParams.gravity = Gravity.CENTER;
         mWindowManager.addView(this, mWindowParams);
     }
 
-    public void addFloatViewToCenterTop()
-    {
+    public void addFloatViewToCenterTop() {
         mWindowParams.gravity = Gravity.CENTER | Gravity.TOP;
         mWindowManager.addView(this, mWindowParams);
     }
 
-    public void removeFloatView()
-    {
+    public void removeFloatView() {
         mWindowManager.removeView(this);
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
 
     }
 
     @Override
-    protected void onDetachedFromWindow()
-    {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeFloatView();
     }

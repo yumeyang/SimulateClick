@@ -17,7 +17,12 @@ import com.zhy.service.FloatingService;
 import com.zhy.simulate.click.R;
 import com.zhy.utils.AccessibilityUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends Activity implements View.OnClickListener {
+
+    public static List<String> mList = new ArrayList<>();
 
     private TextView btn_float_open;
     private TextView btn_access_open;
@@ -28,6 +33,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
         initView();
+
+        for (int i = 0; i < 1000; i++) {
+            mList.add(String.valueOf(i));
+        }
     }
 
     private void initView() {

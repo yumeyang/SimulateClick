@@ -8,20 +8,6 @@
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/tv_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/holo_red_dark"
-        android:gravity="center"
-        android:paddingStart="15dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="15dp"
-        android:paddingBottom="10dp"
-        android:text="时间开"
-        android:textColor="@android:color/white"
-        android:textSize="12sp" />
-
-    <TextView
         android:id="@+id/tv_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +18,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="15dp"
         android:paddingBottom="10dp"
-        android:text="添加"
+        android:text="添加点击"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 
@@ -47,7 +33,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="15dp"
         android:paddingBottom="10dp"
-        android:text="删除"
+        android:text="删除点击"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 
@@ -62,22 +48,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="15dp"
         android:paddingBottom="10dp"
-        android:text="配置"
-        android:textColor="@android:color/white"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/tv_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@android:color/holo_red_dark"
-        android:gravity="center"
-        android:paddingStart="15dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="15dp"
-        android:paddingBottom="10dp"
-        android:text="开始"
+        android:text="配置时间"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 
@@ -92,7 +63,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="15dp"
         android:paddingBottom="10dp"
-        android:text="关闭"
+        android:text="关闭程序"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 </LinearLayout>

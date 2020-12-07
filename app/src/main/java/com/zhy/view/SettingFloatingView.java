@@ -1,13 +1,18 @@
 package com.zhy.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.wx.wheelview.adapter.ArrayWheelAdapter;
+import com.wx.wheelview.widget.WheelView;
+import com.zhy.activity.MainActivity;
 import com.zhy.simulate.click.R;
 
 import java.text.DateFormat;
@@ -25,6 +30,8 @@ import java.util.Date;
 public class SettingFloatingView extends BaseFloatingView {
 
     private TimePicker tp;
+    private WheelView<String> wheel_view;
+    private TextView tv_dismiss;
     private TextView tv_save;
 
     private String mHour;
@@ -42,9 +49,21 @@ public class SettingFloatingView extends BaseFloatingView {
     @Override
     protected void init() {
         super.init();
+        initView();
+        initListener();
+        initData();
+    }
+
+    private void initView() {
         tp = findViewById(R.id.tp);
+        wheel_view = findViewById(R.id.wheel_view);
+        tv_dismiss = findViewById(R.id.tv_dismiss);
         tv_save = findViewById(R.id.tv_save);
         tp.setIs24HourView(true);
+    }
+
+    private void initListener() {
+
         tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int hourOfDay, int minute) {
@@ -52,30 +71,63 @@ public class SettingFloatingView extends BaseFloatingView {
                 mMinute = genMinute(minute);
             }
         });
-        tv_save.setOnClickListener(new View.OnClickListener() {
+
+        tv_dismiss.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCallBack != null) {
-                    if (!TextUtils.isEmpty(mHour) && !TextUtils.isEmpty(mMinute)) {
-                        Calendar calendar = Calendar.getInstance();
-                        int year = calendar.get(Calendar.YEAR);
-                        int month = calendar.get(Calendar.MONTH) + 1;
-                        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                        String time = year + "-" + month + "-" + day + " " + mHour + ":" + mMinute;
-                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        Date date;
-                        try {
-                            date = formatter.parse(time);
-                            mCallBack.save(date.getTime() - 100);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
                 removeFloatView();
             }
         });
+
+        tv_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCallBack == null) {
+                    return;
+                }
+
+                long long_sub_time = 0;
+                String sub_time = wheel_view.getSelectionItem();
+                if (!TextUtils.isEmpty(sub_time)) {
+                    long_sub_time = Integer.parseInt(sub_time);
+                }
+
+                if (long_sub_time >= 1000) {
+                    Toast.makeText(v.getContext(), "只能设置小于1000毫秒", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!TextUtils.isEmpty(mHour) && !TextUtils.isEmpty(mMinute)) {
+                    Calendar calendar = Calendar.getInstance();
+                    int year = calendar.get(Calendar.YEAR);
+                    int month = calendar.get(Calendar.MONTH) + 1;
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                    String time = year + "-" + month + "-" + day + " " + mHour + ":" + mMinute;
+
+                    @SuppressLint("SimpleDateFormat")
+                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    try {
+                        Date date = formatter.parse(time);
+                        if (date != null) {
+                            long save_time = date.getTime() - long_sub_time;
+                            mCallBack.save(save_time);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                removeFloatView();
+            }
+        });
+    }
+
+    private void initData() {
+        wheel_view.setWheelAdapter(new ArrayWheelAdapter(getContext()));
+        wheel_view.setSkin(WheelView.Skin.Common);
+        wheel_view.setWheelData(MainActivity.mList);
+        wheel_view.setSelection(100);
     }
 
     private CallBack mCallBack;
@@ -88,7 +140,7 @@ public class SettingFloatingView extends BaseFloatingView {
         void save(long time);
     }
 
-    public String genMinute(int minute) {
+    private String genMinute(int minute) {
         String minute_;
         if (minute < 10) {
             minute_ = "0" + minute;
@@ -98,7 +150,7 @@ public class SettingFloatingView extends BaseFloatingView {
         return minute_;
     }
 
-    public String genHour(int hour) {
+    private String genHour(int hour) {
         String hour_;
         if (hour < 10) {
             hour_ = "0" + hour;
