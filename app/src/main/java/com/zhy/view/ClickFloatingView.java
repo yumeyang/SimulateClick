@@ -9,7 +9,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.zhy.view.androidsimulateclickdemon.R;
+import com.zhy.simulate.click.R;
+
 
 /**
  * @author:yhz

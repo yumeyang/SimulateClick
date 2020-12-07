@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.zhy.view.androidsimulateclickdemon.R;
+
+import com.zhy.simulate.click.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

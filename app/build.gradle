@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.zhy"
+        applicationId "com.zhy.simulate.click"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -46,4 +46,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.kovachcode:timePickerWithSeconds:1.0.1'
+    implementation 'com.yanzhenjie:permission:2.0.3'
 }
