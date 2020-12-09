@@ -44,7 +44,7 @@ public class TimeFloatingView extends BaseFloatingView {
         tv_time = findViewById(R.id.tv_time);
         setWindowTouch(tv_time);
 
-        mTimer = new CountDownTimer(Integer.MAX_VALUE, 100) {
+        mTimer = new CountDownTimer(Integer.MAX_VALUE, 50) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Message msg = new Message();
@@ -82,13 +82,21 @@ public class TimeFloatingView extends BaseFloatingView {
     @Override
     public void addFloatViewToCenterTop() {
         super.addFloatViewToCenterTop();
-        mTimer.start();
+        start();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        stop();
+    }
+
+    public void stop() {
         mTimer.cancel();
+    }
+
+    public void start() {
+        mTimer.start();
     }
 
     private CallBack mCallBack;

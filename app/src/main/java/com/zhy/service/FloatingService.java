@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import static android.os.SystemClock.sleep;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class FloatingService extends AccessibilityService {
 
     public static FloatingService mService;
@@ -62,16 +63,15 @@ public class FloatingService extends AccessibilityService {
         destroy();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void dispatchGestureClick(int x, int y) {
 
         GestureDescription.Builder builder = new GestureDescription.Builder();
         Path p = new Path();
         p.moveTo(x, y);
         p.lineTo(x, y);
-        builder.addStroke(new GestureDescription.StrokeDescription(p, 0L, 100L));
+        builder.addStroke(new GestureDescription.StrokeDescription(p, 0L, 50L));
         GestureDescription gesture = builder.build();
-        sleep(100);
+        sleep(50);
         dispatchGesture(gesture, new GestureResultCallback() {
         }, null);
     }
@@ -82,9 +82,11 @@ public class FloatingService extends AccessibilityService {
         if (mFloatView == null) {
             mFloatView = new TimeFloatingView(this);
             mFloatView.setCallBack(new TimeFloatingView.CallBack() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
+
                 @Override
                 public void getToTime() {
+                    getTimeFloatingView().stop();
+                    getTimeFloatingView().setVisibility(View.GONE);
                     startTask();
                 }
             });
@@ -132,7 +134,6 @@ public class FloatingService extends AccessibilityService {
                     dialog.addFloatViewToCenter();
                 }
 
-                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void stop(int status) {
                     if (status == 1) {
@@ -147,7 +148,6 @@ public class FloatingService extends AccessibilityService {
         return toolView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void startTask() {
         toClickFloatView();
         getToolView().setTvStop(1);
@@ -155,15 +155,15 @@ public class FloatingService extends AccessibilityService {
     }
 
     public void stopTask() {
+        getTimeFloatingView().start();
+        getTimeFloatingView().setVisibility(View.VISIBLE);
         getToolView().setTvStop(0);
         getTimer().cancel();
         showClickFloatView(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void toClickFloatView() {
         for (ClickFloatingView view : mViews) {
-            view.setVisibility(View.GONE);
             dispatchGestureClick(view.getCenterX(), view.getCenterY());
         }
     }
@@ -182,8 +182,8 @@ public class FloatingService extends AccessibilityService {
 
     private CountDownTimer getTimer() {
         if (mTimer == null) {
-            mTimer = new CountDownTimer(10000, 100) {
-                @RequiresApi(api = Build.VERSION_CODES.N)
+            mTimer = new CountDownTimer(5000, 50) {
+
                 @Override
                 public void onTick(long millisUntilFinished) {
                     toClickFloatView();
@@ -191,6 +191,8 @@ public class FloatingService extends AccessibilityService {
 
                 @Override
                 public void onFinish() {
+                    getTimeFloatingView().start();
+                    getTimeFloatingView().setVisibility(View.VISIBLE);
                     getToolView().setTvStop(0);
                     showClickFloatView(true);
                 }

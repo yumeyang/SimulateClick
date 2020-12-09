@@ -1,6 +1,7 @@
 package com.zhy.view;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.TextView;
 
 import com.zhy.simulate.click.R;
@@ -54,5 +55,7 @@ public class ClickFloatingView extends BaseFloatingView {
         getLocationOnScreen(location);
         mX = location[0] + getWidth() / 2;
         mY = location[1] + getHeight() / 2;
+
+        setVisibility(View.GONE);
     }
 }
