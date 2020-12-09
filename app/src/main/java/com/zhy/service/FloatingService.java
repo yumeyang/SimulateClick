@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Path;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -39,6 +38,12 @@ public class FloatingService extends AccessibilityService {
         mService.getTimeFloatingView().addFloatViewToCenterTop();
     }
 
+
+    private static final long CLICK_DURATION = 10000;
+    private static final long CLICK_SLEEP_TIME = 50;
+
+    private boolean mEndClickTask;
+
     private final ArrayList<ClickFloatingView> mViews = new ArrayList<>();
 
     @Override
@@ -64,7 +69,6 @@ public class FloatingService extends AccessibilityService {
     }
 
     public void dispatchGestureClick(int x, int y) {
-
         GestureDescription.Builder builder = new GestureDescription.Builder();
         Path p = new Path();
         p.moveTo(x, y);
@@ -85,9 +89,7 @@ public class FloatingService extends AccessibilityService {
 
                 @Override
                 public void getToTime() {
-                    getTimeFloatingView().stop();
-                    getTimeFloatingView().setVisibility(View.GONE);
-                    startTask();
+                    startClickTask();
                 }
             });
         }
@@ -127,8 +129,6 @@ public class FloatingService extends AccessibilityService {
                                 view.setAutoTime(time);
                             }
                             getTimeFloatingView().setAutoTime(time);
-                            showClickFloatView(false);
-                            getToolView().setTvStop(1);
                         }
                     });
                     dialog.addFloatViewToCenter();
@@ -137,7 +137,7 @@ public class FloatingService extends AccessibilityService {
                 @Override
                 public void stop(int status) {
                     if (status == 1) {
-                        stopTask();
+                        stopClickTask();
                     } else {
                         disableSelf();
                     }
@@ -148,68 +148,67 @@ public class FloatingService extends AccessibilityService {
         return toolView;
     }
 
-    public void startTask() {
-        toClickFloatView();
-        getToolView().setTvStop(1);
-        getTimer().start();
+    private void startClickTask() {
+        int size = mViews.size();
+        if (size == 0) {
+            return;
+        }
+
+        hideNormalView();
+
+        int click_num = (int) (CLICK_DURATION / CLICK_SLEEP_TIME) * size;
+
+        for (int i = 0; i < click_num || mEndClickTask; i++) {
+            for (ClickFloatingView view : mViews) {
+                dispatchGestureClick(view.getCenterX(), view.getCenterY());
+            }
+        }
+
+        showNormalView();
     }
 
-    public void stopTask() {
+    private void stopClickTask() {
+        mEndClickTask = true;
+        showNormalView();
+    }
+
+    private void showNormalView() {
         getTimeFloatingView().start();
         getTimeFloatingView().setVisibility(View.VISIBLE);
         getToolView().setTvStop(0);
-        getTimer().cancel();
-        showClickFloatView(true);
+        showClickFloat();
     }
 
-    private void toClickFloatView() {
+    private void hideNormalView() {
+        hideAndSaveXY();
+        getTimeFloatingView().stop();
+        getTimeFloatingView().setVisibility(View.GONE);
+        getToolView().setTvStop(1);
+    }
+
+    private void showClickFloat() {
         for (ClickFloatingView view : mViews) {
-            dispatchGestureClick(view.getCenterX(), view.getCenterY());
+            view.setVisibility(View.VISIBLE);
         }
     }
 
-    private void showClickFloatView(boolean show) {
+    private void hideAndSaveXY() {
         for (ClickFloatingView view : mViews) {
-            if (show) {
-                view.setVisibility(View.VISIBLE);
-            } else {
-                view.hideAndSaveXY();
-            }
+            view.hideAndSaveXY();
         }
-    }
-
-    private CountDownTimer mTimer;
-
-    private CountDownTimer getTimer() {
-        if (mTimer == null) {
-            mTimer = new CountDownTimer(5000, 50) {
-
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    toClickFloatView();
-                }
-
-                @Override
-                public void onFinish() {
-                    getTimeFloatingView().start();
-                    getTimeFloatingView().setVisibility(View.VISIBLE);
-                    getToolView().setTvStop(0);
-                    showClickFloatView(true);
-                }
-            };
-        }
-        return mTimer;
     }
 
     private void destroy() {
+        mEndClickTask = true;
+
+        getToolView().removeFloatView();
+        getTimeFloatingView().removeFloatView();
+
         for (ClickFloatingView view : mViews) {
             view.removeFloatView();
             mViews.remove(view);
         }
 
-        getToolView().removeFloatView();
-        getTimeFloatingView().removeFloatView();
-        getTimer().cancel();
         mService = null;
     }
 }
