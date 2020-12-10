@@ -64,14 +64,13 @@ public class FloatingService extends AccessibilityService {
     }
 
     public void dispatchGestureClick(int x, int y) {
-
         GestureDescription.Builder builder = new GestureDescription.Builder();
         Path p = new Path();
         p.moveTo(x, y);
         p.lineTo(x, y);
-        builder.addStroke(new GestureDescription.StrokeDescription(p, 0L, 50L));
+        builder.addStroke(new GestureDescription.StrokeDescription(p, 0L, 1L));
         GestureDescription gesture = builder.build();
-        sleep(50);
+        sleep(1);
         dispatchGesture(gesture, new GestureResultCallback() {
         }, null);
     }
@@ -182,7 +181,7 @@ public class FloatingService extends AccessibilityService {
 
     private CountDownTimer getTimer() {
         if (mTimer == null) {
-            mTimer = new CountDownTimer(5000, 50) {
+            mTimer = new CountDownTimer(10000, 50) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
