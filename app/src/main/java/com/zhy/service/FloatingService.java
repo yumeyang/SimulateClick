@@ -24,6 +24,9 @@ import static android.os.SystemClock.sleep;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class FloatingService extends AccessibilityService {
 
+    private static final long COUNT_DOWN_TIME = 10000;
+    private static final long SLEEP_TIME = 1;
+
     public static FloatingService mService;
 
     public static boolean isStart() {
@@ -68,9 +71,9 @@ public class FloatingService extends AccessibilityService {
         Path p = new Path();
         p.moveTo(x, y);
         p.lineTo(x, y);
-        builder.addStroke(new GestureDescription.StrokeDescription(p, 0L, 1L));
+        builder.addStroke(new GestureDescription.StrokeDescription(p, 0L, SLEEP_TIME));
         GestureDescription gesture = builder.build();
-        sleep(1);
+        sleep(SLEEP_TIME);
         dispatchGesture(gesture, new GestureResultCallback() {
         }, null);
     }
@@ -181,7 +184,10 @@ public class FloatingService extends AccessibilityService {
 
     private CountDownTimer getTimer() {
         if (mTimer == null) {
-            mTimer = new CountDownTimer(10000, 50) {
+            int size = mViews.size();
+            long future_time = COUNT_DOWN_TIME - size * SLEEP_TIME;
+            long interval_time = COUNT_DOWN_TIME / 100 - size * SLEEP_TIME;
+            mTimer = new CountDownTimer(future_time, interval_time) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
