@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -75,6 +76,7 @@ public class FloatingService extends AccessibilityService {
         sleep(SLEEP_TIME);
         dispatchGesture(gesture, new GestureResultCallback() {
         }, null);
+        Log.e("FloatingService", "FloatingService SLEEP_TIME = " + SLEEP_TIME + " mClickedNum = " + mClickedNum);
     }
 
     private TimeFloatingView mFloatView;
@@ -154,6 +156,7 @@ public class FloatingService extends AccessibilityService {
         mLooper.removeMessages(MSG_TYPE_0);
         mLooper.removeMessages(MSG_TYPE_1);
 
+        mClickedNum = 0;
         setRelatedView();
     }
 
@@ -194,6 +197,7 @@ public class FloatingService extends AccessibilityService {
                 }
                 mClickedNum++;
             } else {
+                mClickedNum = 0;
                 setRelatedView();
             }
         }

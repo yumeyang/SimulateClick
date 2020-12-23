@@ -23,17 +23,9 @@ import com.zhy.utils.AccessibilityUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends Activity implements View.OnClickListener {
 
     public static List<String> mList = new ArrayList<>();
-
-    static {
-        mList.clear();
-        for (int i = 0; i < 1000; i++) {
-            mList.add(String.valueOf(i));
-        }
-    }
 
     private TextView btn_float_open;
     private TextView btn_access_open;
@@ -43,13 +35,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
+        initDelayTimeList();
         initView();
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         initData();
+    }
+
+    private void initDelayTimeList() {
+        mList.clear();
+        for (int i = 0; i < 1000; i++) {
+            mList.add(String.valueOf(i));
+        }
     }
 
     private void initView() {
@@ -99,6 +99,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View v) {
         if (v == btn_start_service) {
