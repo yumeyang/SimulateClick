@@ -2,9 +2,6 @@ package com.zhy.view;
 
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.widget.TextView;
 
 import com.zhy.simulate.click.R;
@@ -47,9 +44,17 @@ public class TimeFloatingView extends BaseFloatingView {
         mTimer = new CountDownTimer(Integer.MAX_VALUE, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Message msg = new Message();
-                msg.what = 1;
-                mHandler.sendMessage(msg);
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss S");
+                CharSequence sys_time_str = sdf.format(new Date());
+                tv_time.setText(sys_time_str);
+
+                if (mCallBack != null && mAutoTime > 0) {
+                    long sys_time = System.currentTimeMillis();
+                    if (sys_time >= mAutoTime) {
+                        mAutoTime = 0;
+                        mCallBack.getToTime();
+                    }
+                }
             }
 
             @Override
@@ -58,26 +63,6 @@ public class TimeFloatingView extends BaseFloatingView {
             }
         };
     }
-
-    private final Handler mHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 1) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss S");
-                CharSequence sys_time_str = sdf.format(new Date());
-                if (mCallBack != null && mAutoTime > 0) {
-                    long sys_time = System.currentTimeMillis();
-                    if (sys_time >= mAutoTime) {
-                        mAutoTime = 0;
-                        mCallBack.getToTime();
-                    }
-                }
-
-                tv_time.setText(sys_time_str);
-            }
-        }
-    };
 
     @Override
     public void addFloatViewToCenterTop() {
