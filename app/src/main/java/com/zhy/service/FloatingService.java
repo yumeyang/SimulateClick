@@ -6,7 +6,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Path;
 import android.os.Build;
-import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -23,9 +25,6 @@ import static android.os.SystemClock.sleep;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class FloatingService extends AccessibilityService {
-
-    private static final long COUNT_DOWN_TIME = 10000;
-    private static final long SLEEP_TIME = 1;
 
     public static FloatingService mService;
 
@@ -87,8 +86,6 @@ public class FloatingService extends AccessibilityService {
 
                 @Override
                 public void getToTime() {
-                    getTimeFloatingView().stop();
-                    getTimeFloatingView().setVisibility(View.GONE);
                     startTask();
                 }
             });
@@ -125,11 +122,7 @@ public class FloatingService extends AccessibilityService {
                     dialog.setCallBack(new SettingFloatingView.CallBack() {
                         @Override
                         public void save(long time) {
-                            for (ClickFloatingView view : mViews) {
-                                view.setAutoTime(time);
-                            }
                             getTimeFloatingView().setAutoTime(time);
-                            showClickFloatView(false);
                             getToolView().setTvStop(1);
                         }
                     });
@@ -151,17 +144,17 @@ public class FloatingService extends AccessibilityService {
     }
 
     public void startTask() {
-        toClickFloatView();
+        hideClickFloatView();
         getToolView().setTvStop(1);
-        getTimer().start();
+
+        mLooper.sendEmptyMessage(MSG_TYPE_0);
     }
 
     public void stopTask() {
-        getTimeFloatingView().start();
-        getTimeFloatingView().setVisibility(View.VISIBLE);
-        getToolView().setTvStop(0);
-        getTimer().cancel();
-        showClickFloatView(true);
+        mLooper.removeMessages(MSG_TYPE_0);
+        mLooper.removeMessages(MSG_TYPE_1);
+
+        setRelatedView();
     }
 
     private void toClickFloatView() {
@@ -170,51 +163,61 @@ public class FloatingService extends AccessibilityService {
         }
     }
 
-    private void showClickFloatView(boolean show) {
+    private void showClickFloatView() {
         for (ClickFloatingView view : mViews) {
-            if (show) {
-                view.setVisibility(View.VISIBLE);
+            view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideClickFloatView() {
+        for (ClickFloatingView view : mViews) {
+            view.saveXY();
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    private void setRelatedView() {
+        getToolView().setTvStop(0);
+        showClickFloatView();
+    }
+
+    private final Handler mLooper = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == MSG_TYPE_0) {
+                if (mClickedNum > LIMIT_CLICK_NUM) {
+                    mLooper.sendEmptyMessage(MSG_TYPE_1);
+                } else {
+                    toClickFloatView();
+                    mLooper.sendEmptyMessage(MSG_TYPE_0);
+                }
+                mClickedNum++;
             } else {
-                view.hideAndSaveXY();
+                setRelatedView();
             }
         }
-    }
-
-    private CountDownTimer mTimer;
-
-    private CountDownTimer getTimer() {
-        if (mTimer == null) {
-            int size = mViews.size();
-            long future_time = COUNT_DOWN_TIME - size * SLEEP_TIME;
-            long interval_time = COUNT_DOWN_TIME / 100 - size * SLEEP_TIME;
-            mTimer = new CountDownTimer(future_time, interval_time) {
-
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    toClickFloatView();
-                }
-
-                @Override
-                public void onFinish() {
-                    getTimeFloatingView().start();
-                    getTimeFloatingView().setVisibility(View.VISIBLE);
-                    getToolView().setTvStop(0);
-                    showClickFloatView(true);
-                }
-            };
-        }
-        return mTimer;
-    }
+    };
 
     private void destroy() {
         for (ClickFloatingView view : mViews) {
             view.removeFloatView();
-            mViews.remove(view);
         }
+        mViews.clear();
 
         getToolView().removeFloatView();
         getTimeFloatingView().removeFloatView();
-        getTimer().cancel();
+
+        mLooper.removeMessages(MSG_TYPE_0);
+        mLooper.removeMessages(MSG_TYPE_1);
+
         mService = null;
     }
+
+    private int mClickedNum;//已经点击的次数
+
+    private static final int LIMIT_CLICK_NUM = 100;//循环执行点击100次
+    private static final long SLEEP_TIME = 100;//点击执行时间（系统睡眠时间）,单位毫秒
+    private static final int MSG_TYPE_0 = 0;//循环执行
+    private static final int MSG_TYPE_1 = 1;//循环停止
 }

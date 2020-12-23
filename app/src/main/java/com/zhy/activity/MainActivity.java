@@ -3,11 +3,14 @@ package com.zhy.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -20,9 +23,17 @@ import com.zhy.utils.AccessibilityUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends Activity implements View.OnClickListener {
 
     public static List<String> mList = new ArrayList<>();
+
+    static {
+        mList.clear();
+        for (int i = 0; i < 1000; i++) {
+            mList.add(String.valueOf(i));
+        }
+    }
 
     private TextView btn_float_open;
     private TextView btn_access_open;
@@ -33,10 +44,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
         initView();
-
-        for (int i = 0; i < 1000; i++) {
-            mList.add(String.valueOf(i));
-        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
     }
 
     private void initView() {
@@ -50,8 +63,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initData() {
-        boolean isAccess = AccessibilityUtil.isAccessibilitySettingsOn(this);
-        if (isAccess) {
+        boolean is_access = AccessibilityUtil.isAccessibilitySettingsOn(this);
+        if (is_access) {
             btn_access_open.setText("已开启");
             btn_access_open.setClickable(false);
             btn_access_open.setSelected(true);
@@ -119,11 +132,5 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
             }).start();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initData();
     }
 }

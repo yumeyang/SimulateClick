@@ -1,7 +1,6 @@
 package com.zhy.view;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.TextView;
 
 import com.zhy.simulate.click.R;
@@ -15,14 +14,6 @@ import com.zhy.simulate.click.R;
  */
 public class ClickFloatingView extends BaseFloatingView {
 
-    private long mAutoTime;
-
-    public void setAutoTime(long time) {
-        mAutoTime = time;
-    }
-
-    private TextView tv_click;
-
     private int mX;
     private int mY;
 
@@ -33,7 +24,7 @@ public class ClickFloatingView extends BaseFloatingView {
     @Override
     protected void init() {
         super.init();
-        tv_click = findViewById(R.id.tv_click);
+        TextView tv_click = findViewById(R.id.tv_click);
         setWindowTouch(tv_click);
     }
 
@@ -50,12 +41,10 @@ public class ClickFloatingView extends BaseFloatingView {
         return mY;
     }
 
-    public void hideAndSaveXY() {
+    public void saveXY() {
         int[] location = new int[2];
         getLocationOnScreen(location);
         mX = location[0] + getWidth() / 2;
         mY = location[1] + getHeight() / 2;
-
-        setVisibility(View.GONE);
     }
 }

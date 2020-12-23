@@ -44,7 +44,7 @@ public class TimeFloatingView extends BaseFloatingView {
         tv_time = findViewById(R.id.tv_time);
         setWindowTouch(tv_time);
 
-        mTimer = new CountDownTimer(Integer.MAX_VALUE, 50) {
+        mTimer = new CountDownTimer(Integer.MAX_VALUE, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Message msg = new Message();
@@ -64,7 +64,7 @@ public class TimeFloatingView extends BaseFloatingView {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 1) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss SS");
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss S");
                 CharSequence sys_time_str = sdf.format(new Date());
                 if (mCallBack != null && mAutoTime > 0) {
                     long sys_time = System.currentTimeMillis();
